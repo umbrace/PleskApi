@@ -104,7 +104,7 @@ namespace PleskXmlApi_1_6_9_1.XmlModels
         }
         #endregion
 
-        #region Create
+        #region CreateSite
         private static XmlDocument Create()
         {
             var retval = new XmlDocument();

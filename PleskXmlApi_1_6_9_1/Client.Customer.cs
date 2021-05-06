@@ -1,34 +1,35 @@
 ﻿using System.Net;
 using System.Net.Security;
 using System.Xml;
+using PleskXmlApi_1_6_9_1.ResultModels;
 using PleskXmlApi_1_6_9_1.XmlModels;
 
 namespace PleskXmlApi_1_6_9_1
 {
     public partial class Client
     {
-        public XmlDocument GetSite(Models.Site.DataSets dataSets, Models.Site.Filter filter)
+        public Models.Customer GetCustomer(Models.Customer.DataSets dataSets, Models.Customer.Filter filter)
         {
             ServicePointManager.ServerCertificateValidationCallback =
                 new RemoteCertificateValidationCallback(RemoteCertificateValidation);
             Request request = new Request(_hostName, _user, _password);
 
-            var packet = Site.Get(dataSets, filter);
+            var packet = Customer.Get(dataSets, filter);
 
             XmlDocument result = request.Send(packet);
-            return result;
+            return Models.Customer.FromGetCustomerDocument(result);
         }
 
-        public XmlDocument CreateSite(Models.Site site)
+        public CreateCustomer CreateCustomer(Models.Customer customer)
         {
             ServicePointManager.ServerCertificateValidationCallback =
                 new RemoteCertificateValidationCallback(RemoteCertificateValidation);
             Request request = new Request(_hostName, _user, _password);
 
-            var packet = Site.Create(site);
+            var packet = Customer.Create(customer);
 
             XmlDocument result = request.Send(packet);
-            return result;
+            return new CreateCustomer(result);
         }
     }
 }
