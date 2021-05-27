@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using PleskXmlApi_1_6_9_1.Extensions;
@@ -56,7 +57,7 @@ namespace PleskXmlApi_1_6_9_1.XmlModels
             }
             if (dataSets.HasFlag(Models.Webspace.DataSets.Preferences))
             {
-                dataSetsTag.AppendChild(document.CreateElement("pref"));
+                dataSetsTag.AppendChild(document.CreateElement("prefs"));
             }
             if (dataSets.HasFlag(Models.Webspace.DataSets.DiskUsage))
             {
@@ -158,10 +159,12 @@ namespace PleskXmlApi_1_6_9_1.XmlModels
             var document = Create();
             AddGeneral(document,webspace);
             AddHosting(document,webspace);
+            AddPreferences(document, webspace);
             if (webspace.PlanName.IsNotNullOrWhiteSpace())
             {
                 document.AppendTagWithValue("add", "plan-name", webspace.PlanName);
             }
+            AddMail(document, webspace);
             return document;
         }
 
@@ -209,6 +212,32 @@ namespace PleskXmlApi_1_6_9_1.XmlModels
             if (webspace.Hosting.VirtualHost.IpAddress.IsNotNullOrWhiteSpace())
             {
                 document.AppendTagWithValue("vrt_hst", "ip_address", webspace.Hosting.VirtualHost.IpAddress);
+            }
+        }
+
+        private static void AddPreferences(XmlDocument document, Models.Webspace webspace)
+        {
+            if (webspace.Preferences == null)
+            {
+                return;
+            }
+            document.AppendTag("add", "prefs");
+            if (webspace.Preferences.WWW.HasValue)
+            {
+                document.AppendTagWithValue("prefs", "www", webspace.Preferences.WWW.Value ? "true": "false");
+            }
+        }
+
+        private static void AddMail(XmlDocument document, Models.Webspace webspace)
+        {
+            if (webspace.Mail == null)
+            {
+                return;
+            }
+            document.AppendTag("add", "mail");
+            if (webspace.Mail.MailService.HasValue)
+            {
+                document.AppendTagWithValue("mail", "mailservice", webspace.Mail.MailService.Value ? "true" : "false");
             }
         }
     }

@@ -8,6 +8,8 @@ namespace PleskXmlApi_1_6_9_1.Models
     {
         public Webspace_General General { get; set; }
         public Webspace_Hosting Hosting { get; set; }
+        public Webspace_Preferences Preferences { get; set; }
+        public Webspace_Mail Mail { get; set; }
         public string PlanName { get; set; }
 
         public class Webspace_General
@@ -28,6 +30,17 @@ namespace PleskXmlApi_1_6_9_1.Models
                 public Dictionary<string, string> Properties { get; set; }
                 public string IpAddress { get; set; }
             }
+        }
+
+        public class Webspace_Preferences
+        {
+            public bool? WWW { get; set; }
+            //public int? StatTtl { get; set; } //todo change by enum
+        }
+
+        public class Webspace_Mail
+        {
+            public bool? MailService { get; set; }
         }
 
         [Flags]

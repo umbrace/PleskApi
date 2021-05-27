@@ -29,6 +29,48 @@ namespace PleskXmlApiTester
             }
 
             var client = new PleskXmlApi_1_6_9_1.Client(args[0], args[1], args[2]);
+            FullTestSetup(client);
+            //DebugUsers(client);
+            //DebugWebspaces(client);
+        }
+
+        private static void DebugUsers(PleskXmlApi_1_6_9_1.Client client)
+        {
+            var existingUser = JsonConvert.SerializeObject(client.GetCustomer(Customer.DataSets.Gen_Info | Customer.DataSets.Statistics,
+                new Customer.Filter { Id = 27 }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "existingUser.json"), existingUser);
+
+            var createdUser = JsonConvert.SerializeObject(client.GetCustomer(Customer.DataSets.Gen_Info | Customer.DataSets.Statistics,
+                new Customer.Filter { Id = 5 }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "createdUser.json"), createdUser);
+        }
+
+        private static void DebugWebspaces(PleskXmlApi_1_6_9_1.Client client)
+        {
+            var allDatasets = Webspace.DataSets.Gen_Info | Webspace.DataSets.Hosting | Webspace.DataSets.Limits |
+                              Webspace.DataSets.Mail | Webspace.DataSets.Permissions | Webspace.DataSets.ApsFilter |
+                              Webspace.DataSets.Packages | Webspace.DataSets.PhpSettings | Webspace.DataSets.PlanItems |
+                              Webspace.DataSets.Preferences | Webspace.DataSets.Subscriptions;
+
+            var existingWebspace = JsonConvert.SerializeObject(client.GetWebspace(allDatasets, new Webspace.Filter
+                {
+                    Id = 37
+            }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "existingWebspace.json"), existingWebspace);
+
+            var createdWebspace = JsonConvert.SerializeObject(client.GetWebspace(allDatasets, new Webspace.Filter
+                {
+                    Id = 46
+            }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "createdWebspace.json"), createdWebspace);
+        }
+
+        private static void FullTestSetup(PleskXmlApi_1_6_9_1.Client client)
+        {
             try
             {
                 var createCustomer = CreateCustomer(client, true);
@@ -84,7 +126,7 @@ namespace PleskXmlApiTester
                 General = new Webspace.Webspace_General
                 {
                     Name = "Apitest.com",
-                    IpAddress = "127.0.0.1", //todo get this from iplist
+                    IpAddress = "62.213.218.15", //todo get this from iplist
                     HostingType = "vrt_hst", //todo change by enum?
                     OwnerId = customerId
                 },
@@ -92,15 +134,27 @@ namespace PleskXmlApiTester
                 {
                     VirtualHost = new Webspace.Webspace_Hosting.Virtual_Host
                     {
-                        IpAddress = "127.0.0.1", //todo get this from iplist
+                        IpAddress = "62.213.218.15", //todo get this from iplist
                         Properties = new Dictionary<string, string>
                         {
-                            { Properties.Customer.Hosting.FtpLogin, "apitest_ftp" },
-                            { Properties.Customer.Hosting.FtpPassword, "0123456789" }
+                            { Properties.Hosting.FtpLogin, "apitest_ftp" },
+                            { Properties.Hosting.FtpPassword, "0123456789" },
+                            { Properties.Hosting.Php, "false"},
+                            { Properties.Hosting.AspDotNet, "true"},
+                            { Properties.Hosting.ManagedRuntimeVersion,  "4.0"},
+
                         }
                     }
                 },
-                PlanName = "Unlimited" //todo get this from planlist
+                PlanName = "Unlimited", //todo get this from planlist
+                Preferences = new Webspace.Webspace_Preferences
+                {
+                    WWW = true
+                },
+                Mail = new Webspace.Webspace_Mail
+                {
+                    MailService = false
+                }
             });
 
             if (log)
