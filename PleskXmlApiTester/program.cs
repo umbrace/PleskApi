@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Security.Cryptography.X509Certificates;
@@ -38,6 +39,17 @@ namespace PleskXmlApiTester
         {
             try
             {
+                Console.WriteLine("Getting IpAddresses");
+                var ipAddresses = client.GetIpAddresses();
+                PrintResult(ipAddresses);
+                if (ipAddresses?.Any() == false)
+                {
+                    Console.ReadKey();
+                    return;
+                }
+
+                var mainIpAddress = ipAddresses.First().Address;
+
                 var createCustomer = CreateCustomer(client, true);
                 if (createCustomer.Status != Status.Ok)
                 {
@@ -47,7 +59,7 @@ namespace PleskXmlApiTester
                 Console.WriteLine("Getting Customer (" + createCustomer.Id + "):");
                 PrintResult(client.GetCustomer(Customer.DataSets.Gen_Info, new Customer.Filter { Id = createCustomer.Id }));
 
-                var createWebspace = CreateWebspace(client, createCustomer.Id, true);
+                var createWebspace = CreateWebspace(client, mainIpAddress, createCustomer.Id, true);
                 if (createWebspace.Status != Status.Ok)
                 {
                     Console.ReadKey();
@@ -87,7 +99,7 @@ namespace PleskXmlApiTester
             return result;
         }
 
-        private static CreateWebspace CreateWebspace(PleskXmlApi_1_6_9_1.Client client, int? customerId, bool log = false)
+        private static CreateWebspace CreateWebspace(PleskXmlApi_1_6_9_1.Client client,string ipAddress, int? customerId, bool log = false)
         {
             if (log)
             {
@@ -98,7 +110,7 @@ namespace PleskXmlApiTester
                 General = new Webspace.Webspace_General
                 {
                     Name = "Apitest.com",
-                    IpAddress = "62.213.218.15", //todo get this from iplist
+                    IpAddress = ipAddress,
                     HostingType = "vrt_hst", //todo change by enum?
                     OwnerId = customerId
                 },
@@ -106,7 +118,7 @@ namespace PleskXmlApiTester
                 {
                     VirtualHost = new Webspace.Webspace_Hosting.Virtual_Host
                     {
-                        IpAddress = "62.213.218.15", //todo get this from iplist
+                        IpAddress = ipAddress,
                         Properties = new Dictionary<string, string>
                         {
                             { Properties.Hosting.FtpLogin, "apitest_ftp" },
