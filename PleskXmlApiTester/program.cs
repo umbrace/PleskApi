@@ -30,6 +30,7 @@ namespace PleskXmlApiTester
             }
 
             var client = new PleskXmlApi_1_6_9_1.Client(args[0], args[1], args[2]);
+
             FullTestSetup(client);
             //DebugUsers(client);
             //DebugWebspaces(client);
@@ -66,7 +67,21 @@ namespace PleskXmlApiTester
                     return;
                 }
 
-                var createSiteAlias = CreateSiteAlias(client, createWebspace.Id, true);
+                CreateSiteAlias(client, createWebspace.Id, true);
+
+                var dbServers = client.GetDbServers();
+                PrintResult(dbServers);
+                var firstMsSqlServer = dbServers.FirstOrDefault(s => s.Type == Types.DbServer.MsSql)?.Id;
+                Console.WriteLine("Primary MSSQL server detected: " + firstMsSqlServer);
+
+                var createdDatabase = CreateDatabase(client, createWebspace.Id, true);
+
+                if (createdDatabase.Status != Status.Ok)
+                {
+                    Console.ReadKey();
+                    return;
+                }
+                CreateDatabaseUser(client, createdDatabase.Id, true);
                 Console.ReadKey();
             }
             catch (Exception e)
@@ -99,7 +114,7 @@ namespace PleskXmlApiTester
             return result;
         }
 
-        private static CreateWebspace CreateWebspace(PleskXmlApi_1_6_9_1.Client client,string ipAddress, int? customerId, bool log = false)
+        private static CreateWebspace CreateWebspace(PleskXmlApi_1_6_9_1.Client client, string ipAddress, int? customerId, bool log = false)
         {
             if (log)
             {
@@ -126,6 +141,7 @@ namespace PleskXmlApiTester
                             { Properties.Hosting.Php, "false"},
                             { Properties.Hosting.AspDotNet, "true"},
                             { Properties.Hosting.ManagedRuntimeVersion,  "4.0"},
+                            { Properties.Hosting.Ssl,  "true"},
                         }
                     }
                 },
@@ -166,6 +182,50 @@ namespace PleskXmlApiTester
                     SeoRedirect = false,
                     Web = true
                 }
+            });
+
+            if (log)
+            {
+                PrintResult(result);
+            }
+
+            return result;
+        }
+
+        private static CreateDatabase CreateDatabase(PleskXmlApi_1_6_9_1.Client client, int webSpaceId,
+            bool log = false)
+        {
+            if (log)
+            {
+                Console.WriteLine("Creating Database:");
+            }
+            var result = client.CreateDatabase(new Database
+            {
+                Type = Types.DbServer.MsSql,
+                Name = "ApiTest_Db",
+                WebspaceId = webSpaceId
+            });
+
+            if (log)
+            {
+                PrintResult(result);
+            }
+
+            return result;
+        }
+
+        private static CreateDatabaseUser CreateDatabaseUser(PleskXmlApi_1_6_9_1.Client client, int dbId,
+            bool log = false)
+        {
+            if (log)
+            {
+                Console.WriteLine("Creating Database user:");
+            }
+            var result = client.CreateDatabaseUser(new DatabaseUser()
+            {
+                DbId = dbId,
+                Login = "ApiTest_user",
+                Password = "ApiTest_user"
             });
 
             if (log)

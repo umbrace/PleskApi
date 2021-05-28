@@ -8,7 +8,6 @@ namespace PleskXmlApi_1_6_9_1.ResultModels
     public class Identity : Base
     {
         public int Id { get; set; }
-        public string Guid { get; set; }
         private string BaseXpath { get; set; }
 
         public Identity()
@@ -42,7 +41,6 @@ namespace PleskXmlApi_1_6_9_1.ResultModels
         protected void SetFields(XmlDocument document)
         {
             Id = Int32.Parse(document.SelectSingleNode(BaseXpath + "//id")?.InnerText);
-            Guid = document.SelectSingleNode(BaseXpath + "add//guid")?.InnerText;
         }
     }
 }

@@ -20,11 +20,11 @@ namespace PleskXmlApi_1_6_9_1.Models
             for (int i = 0; i < nodes.Count; i++)
             {
                 var item = new IpAddress();
-                item.Address = nodes[i].SelectSingleNode("//ip_address")?.InnerText;
-                item.NetMask = nodes[i].SelectSingleNode("//netmask")?.InnerText;
-                item.Type = nodes[i].SelectSingleNode("//type")?.InnerText;
-                item.Interface = nodes[i].SelectSingleNode("//interface")?.InnerText;
-                item.PublicAddress = nodes[i].SelectSingleNode("//public_ip_address")?.InnerText;
+                item.Address = nodes[i].SelectSingleNode("ip_address")?.InnerText;
+                item.NetMask = nodes[i].SelectSingleNode("netmask")?.InnerText;
+                item.Type = nodes[i].SelectSingleNode("type")?.InnerText;
+                item.Interface = nodes[i].SelectSingleNode("interface")?.InnerText;
+                item.PublicAddress = nodes[i].SelectSingleNode("public_ip_address")?.InnerText;
                 retval.Add(item);
             }
             
