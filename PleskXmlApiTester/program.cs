@@ -34,41 +34,6 @@ namespace PleskXmlApiTester
             //DebugWebspaces(client);
         }
 
-        private static void DebugUsers(PleskXmlApi_1_6_9_1.Client client)
-        {
-            var existingUser = JsonConvert.SerializeObject(client.GetCustomer(Customer.DataSets.Gen_Info | Customer.DataSets.Statistics,
-                new Customer.Filter { Id = 27 }),
-                Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "existingUser.json"), existingUser);
-
-            var createdUser = JsonConvert.SerializeObject(client.GetCustomer(Customer.DataSets.Gen_Info | Customer.DataSets.Statistics,
-                new Customer.Filter { Id = 5 }),
-                Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "createdUser.json"), createdUser);
-        }
-
-        private static void DebugWebspaces(PleskXmlApi_1_6_9_1.Client client)
-        {
-            var allDatasets = Webspace.DataSets.Gen_Info | Webspace.DataSets.Hosting | Webspace.DataSets.Limits |
-                              Webspace.DataSets.Mail | Webspace.DataSets.Permissions | Webspace.DataSets.ApsFilter |
-                              Webspace.DataSets.Packages | Webspace.DataSets.PhpSettings | Webspace.DataSets.PlanItems |
-                              Webspace.DataSets.Preferences | Webspace.DataSets.Subscriptions;
-
-            var existingWebspace = JsonConvert.SerializeObject(client.GetWebspace(allDatasets, new Webspace.Filter
-                {
-                    Id = 37
-            }),
-                Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "existingWebspace.json"), existingWebspace);
-
-            var createdWebspace = JsonConvert.SerializeObject(client.GetWebspace(allDatasets, new Webspace.Filter
-                {
-                    Id = 46
-            }),
-                Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "createdWebspace.json"), createdWebspace);
-        }
-
         private static void FullTestSetup(PleskXmlApi_1_6_9_1.Client client)
         {
             try
@@ -83,6 +48,13 @@ namespace PleskXmlApiTester
                 PrintResult(client.GetCustomer(Customer.DataSets.Gen_Info, new Customer.Filter { Id = createCustomer.Id }));
 
                 var createWebspace = CreateWebspace(client, createCustomer.Id, true);
+                if (createWebspace.Status != Status.Ok)
+                {
+                    Console.ReadKey();
+                    return;
+                }
+
+                var createSiteAlias = CreateSiteAlias(client, createWebspace.Id, true);
                 Console.ReadKey();
             }
             catch (Exception e)
@@ -115,7 +87,7 @@ namespace PleskXmlApiTester
             return result;
         }
 
-        private static XmlDocument CreateWebspace(PleskXmlApi_1_6_9_1.Client client, int? customerId, bool log = false)
+        private static CreateWebspace CreateWebspace(PleskXmlApi_1_6_9_1.Client client, int? customerId, bool log = false)
         {
             if (log)
             {
@@ -142,7 +114,6 @@ namespace PleskXmlApiTester
                             { Properties.Hosting.Php, "false"},
                             { Properties.Hosting.AspDotNet, "true"},
                             { Properties.Hosting.ManagedRuntimeVersion,  "4.0"},
-
                         }
                     }
                 },
@@ -159,7 +130,35 @@ namespace PleskXmlApiTester
 
             if (log)
             {
-                PrintXml(result);
+                PrintResult(result);
+            }
+
+            return result;
+        }
+
+        private static CreateSiteAlias CreateSiteAlias(PleskXmlApi_1_6_9_1.Client client, int siteId,
+            bool log = false)
+        {
+            if (log)
+            {
+                Console.WriteLine("Creating Site Alias:");
+            }
+            var result = client.CreateSiteAlias(new SiteAlias
+            {
+                ManageDns = false,
+                Name = "Apitest.Umbraceprojects.be",
+                SiteId = siteId,
+                Preferences = new SiteAlias.SiteAlias_Preferences
+                {
+                    Mail = false,
+                    SeoRedirect = false,
+                    Web = true
+                }
+            });
+
+            if (log)
+            {
+                PrintResult(result);
             }
 
             return result;
@@ -179,6 +178,42 @@ namespace PleskXmlApiTester
         static void PrintResult(object result)
         {
             Console.WriteLine(JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
+        }
+
+
+        private static void DebugUsers(PleskXmlApi_1_6_9_1.Client client)
+        {
+            var existingUser = JsonConvert.SerializeObject(client.GetCustomer(Customer.DataSets.Gen_Info | Customer.DataSets.Statistics,
+                new Customer.Filter { Id = 27 }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "existingUser.json"), existingUser);
+
+            var createdUser = JsonConvert.SerializeObject(client.GetCustomer(Customer.DataSets.Gen_Info | Customer.DataSets.Statistics,
+                new Customer.Filter { Id = 5 }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "createdUser.json"), createdUser);
+        }
+
+        private static void DebugWebspaces(PleskXmlApi_1_6_9_1.Client client)
+        {
+            var allDatasets = Webspace.DataSets.Gen_Info | Webspace.DataSets.Hosting | Webspace.DataSets.Limits |
+                              Webspace.DataSets.Mail | Webspace.DataSets.Permissions | Webspace.DataSets.ApsFilter |
+                              Webspace.DataSets.Packages | Webspace.DataSets.PhpSettings | Webspace.DataSets.PlanItems |
+                              Webspace.DataSets.Preferences | Webspace.DataSets.Subscriptions;
+
+            var existingWebspace = JsonConvert.SerializeObject(client.GetWebspace(allDatasets, new Webspace.Filter
+            {
+                Id = 37
+            }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "existingWebspace.json"), existingWebspace);
+
+            var createdWebspace = JsonConvert.SerializeObject(client.GetWebspace(allDatasets, new Webspace.Filter
+            {
+                Id = 46
+            }),
+                Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "createdWebspace.json"), createdWebspace);
         }
     }
 }

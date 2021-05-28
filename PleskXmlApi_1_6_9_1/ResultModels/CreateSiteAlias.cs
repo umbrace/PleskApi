@@ -5,9 +5,9 @@ using System.Xml;
 
 namespace PleskXmlApi_1_6_9_1.ResultModels
 {
-    public class CreateCustomer : Identity
+    public class CreateSiteAlias : Identity
     {
-        public CreateCustomer(XmlDocument document) : base(document, "//customer//add")
+        public CreateSiteAlias(XmlDocument document) : base(document, "//site-alias//create")
         {
             if (base.IsSuccess() == false)
             {
