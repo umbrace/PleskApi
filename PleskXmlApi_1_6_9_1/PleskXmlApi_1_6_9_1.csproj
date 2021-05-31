@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Sven, Damiaan</Authors>
+    <Product>PleskXmlApi</Product>
+    <Version>1.6.9</Version>
+    <PackageProjectUrl>https://github.com/umbrace/PleskApi</PackageProjectUrl>
+    <PackageId>PleskXmlApi</PackageId>
+    <RepositoryUrl>https://github.com/umbrace/PleskApi</RepositoryUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
