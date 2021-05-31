@@ -26,7 +26,12 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
-    - run: echo "Deploying branch $GITHUB_REF to nuget"
+    - run: echo "Deploying main bransh to nuget"
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
     - name: Publish NuGet
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
