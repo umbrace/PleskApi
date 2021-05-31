@@ -9,6 +9,7 @@
     <PackageProjectUrl>https://github.com/umbrace/PleskApi</PackageProjectUrl>
     <PackageId>PleskXmlApi</PackageId>
     <RepositoryUrl>https://github.com/umbrace/PleskApi</RepositoryUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
