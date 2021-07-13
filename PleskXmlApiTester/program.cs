@@ -31,9 +31,10 @@ namespace PleskXmlApiTester
 
             var client = new PleskXmlApi_1_6_9_1.Client(args[0], args[1], args[2]);
 
-            FullTestSetup(client);
+            //FullTestSetup(client);
             //DebugUsers(client);
-            //DebugWebspaces(client);
+            DebugWebspaces(client);
+            Console.ReadKey();
         }
 
         private static void FullTestSetup(PleskXmlApi_1_6_9_1.Client client)

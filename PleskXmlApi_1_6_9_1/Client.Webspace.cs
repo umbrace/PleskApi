@@ -8,7 +8,7 @@ namespace PleskXmlApi_1_6_9_1
 {
     public partial class Client
     {
-        public XmlDocument GetWebspace(Models.Webspace.DataSets dataSets, Models.Webspace.Filter filter)
+        public GetWebSpace GetWebspace(Models.Webspace.DataSets dataSets, Models.Webspace.Filter filter)
         {
             ServicePointManager.ServerCertificateValidationCallback =
                 new RemoteCertificateValidationCallback(RemoteCertificateValidation);
@@ -17,7 +17,7 @@ namespace PleskXmlApi_1_6_9_1
             var packet = Webspace.Get(dataSets, filter);
 
             XmlDocument result = request.Send(packet);
-            return result;
+            return new GetWebSpace(result);
         }
 
         public CreateWebspace CreateWebspace(Models.Webspace webspace)

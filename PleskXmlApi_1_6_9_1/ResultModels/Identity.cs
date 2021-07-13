@@ -8,7 +8,7 @@ namespace PleskXmlApi_1_6_9_1.ResultModels
     public class Identity : Base
     {
         public int Id { get; set; }
-        private string BaseXpath { get; set; }
+        protected string BaseXpath { get; set; }
 
         public Identity()
         {
