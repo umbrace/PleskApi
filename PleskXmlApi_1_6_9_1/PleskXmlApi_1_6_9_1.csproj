@@ -1,15 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Sven, Damiaan</Authors>
-    <Product>PleskXmlApi</Product>
-    <Version>1.6.9</Version>
+    <Authors>Sven Geusens, Damiaan Peters</Authors>
+    <Product>PleskApi with XML version 1.6.9.1</Product>
+    <Version>0.1.3</Version>
     <PackageProjectUrl>https://github.com/umbrace/PleskApi</PackageProjectUrl>
-    <PackageId>PleskXmlApi</PackageId>
+    <PackageId>PleskXmlApi_1_6_9_1</PackageId>
     <RepositoryUrl>https://github.com/umbrace/PleskApi</RepositoryUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <Company>Umbrace</Company>
+    <Description>Consult your plesk documentation if this sdk can be used with your api version.
+Only a select few methods have currently been implemented</Description>
   </PropertyGroup>
 
   <ItemGroup>
